@@ -1,43 +1,49 @@
 class Fruit {
-  constructor(x, y, size, color, speed) {
-    this.color = color;
-    this.speed = speed;
-    this.size = size;
+  constructor( bad, picture) {
+    this.size = 80;
     //coordinates and velocity
-    this.x = x;
-    this.y = y;
-    this.xV = randomXV(x);
-    this.yV = random(-28, -42);
-
+    this.x = random(width * 0.15, width * 0.85);
+    this.y = height;
+    this.xV = randomXV(this.x);
+    this.yV = random(-34, -42);
     this.isSliced = false;
     this.visible = true;
+    this.isBad = bad;
+    this.picture = picture;
+    this.badFruitPic = loadImage('images/bomb-icon2.png');
+    this.stainPic = loadImage('images/stain-icon.png');
   }
-
+ 
   draw() {
-    noStroke(); 
-    if(this.isSliced) {
-      this.color = lerpColor(this.color, clearColor(this.color), 0.3)
+    if(this.isBad) {
+      image(this.badFruitPic, this.x, this.y)
+    }  
+    if(!this.isBad) {  
+      image(this.picture, this.x, this.y)
     } 
-    fill(this.color);
-    ellipse(this.x, this.y, this.size)
-    
-    
-
+    if(this.isBad && this.isSliced) {
+      endGame('Stay away from bombs!')
+    } 
   }
 
   update () {
+    if(this.isBad) {
+      this.size = 45;
+    }
     this.x += this.xV
     this.y += this.yV
-
+    
     this.xV *= 0.97;
     this.yV += GRAVITY 
-
+      
     if(this.y > height) {
       this.visible = false;
     }
   }
-
-
+  drawSplat() {
+    image(this.stainPic, this.x, this.y)
+    
+  }
 }
 
 function randomXV (x) {
